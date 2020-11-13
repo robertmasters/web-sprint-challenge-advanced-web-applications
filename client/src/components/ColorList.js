@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { axiosWithAuth } from "../utils/axiosWithAuth";
+import { useHistory } from 'react-router-dom'
 
 const initialColor = {
   color: "",
@@ -8,6 +10,9 @@ const initialColor = {
 
 const ColorList = ({ colors, updateColors }) => {
   console.log(colors);
+
+  const { push } = useHistory();
+
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
 
@@ -16,15 +21,53 @@ const ColorList = ({ colors, updateColors }) => {
     setColorToEdit(color);
   };
 
+  // console.log('outside of saveEdit colorToEdit: ', colorToEdit)
+  // console.log('outside of saveEdit editing: ', editing)
+  // console.log('outside of saveEdit updateColors: ', updateColors)
+  // console.log('outside of saveEdit colors: ', colors)
+
+
   const saveEdit = e => {
     e.preventDefault();
+    // console.log('saveEdit - colorToEdit: ', colorToEdit)
+    // console.log('saveEdit - editing: ', editing)
+    // console.log('saveEdit - updateColors: ', updateColors)
+    // console.log('saveEdit - colors: ', colors)
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
+    axiosWithAuth()
+    .put(`/colors/${colorToEdit.id}`)
+    .then((res) => {
+      console.log('safeEdit res: ', res)
+
+      // updateColors(colors)
+
+      
+    })
+    .catch((error)=>{
+      console.log("error with saveEdit in colorList.js: ", error)
+    })
+
+
   };
 
   const deleteColor = color => {
     // make a delete request to delete this color
+    axiosWithAuth()
+    .delete(`/colors/${colorToEdit.id}`)
+    .then((res) => {
+      console.log('deleteColor res: ', res)
+      // updateColors()
+      // push('/protected');
+      updateColors(colors.filter((item)=>{
+          if(item.id !== color.id)
+          return item
+        }))
+    })
+    .catch((error) =>{
+      console.log("error with deleteColor in colorList.js: ", error)
+    })
   };
 
   return (
@@ -34,13 +77,13 @@ const ColorList = ({ colors, updateColors }) => {
         {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
-              <span className="delete" onClick={e => {
+              [<span className="delete" onClick={e => {
                     e.stopPropagation();
                     deleteColor(color)
                   }
                 }>
                   x
-              </span>{" "}
+              </span>]   {" "}
               {color.color}
             </span>
             <div
