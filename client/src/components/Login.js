@@ -3,23 +3,21 @@ import axios from 'axios'
 import { Route, NavLink, useHistory } from 'react-router-dom'
 // import { useState } from 'react'
 import { axiosWithAuth } from "../utils/axiosWithAuth";
+
 const Login = () => {
   const { push } = useHistory();
   const [credentials, setCredentials] =  useState ({
-    credentials: {
-      
       username: '',
       password: ''
-      
-    }
+
   });
 
   const handleChange = e => {
     setCredentials({
-      setCredentials: {
+ 
         ...credentials,
         [e.target.name]: e.target.value
-      }
+      
     });
   };
 
@@ -32,8 +30,8 @@ const Login = () => {
     console.log("creds: ",credentials);
 
     axiosWithAuth()
-    .post("/api/login", credentials)
-    .then(res=>{
+    .post("/login", credentials)
+    .then((res)=>{
 
     console.log(res)
     //assign res to data
